@@ -1,0 +1,72 @@
+const Task = require('../models/Task')
+const Project = require('../models/Project')
+const emailQueue = require('../queues/emailQueue')
+
+/**
+ * 🔹 Create Task
+ */
+exports.createTask = async (data, user) => {
+  // Ensure project belongs to same org
+  const project = await Project.findOne({
+    _id: data.projectId,
+    organizationId: user.organizationId,
+  })
+
+  if (!project) {
+    throw new Error('Invalid project')
+  }
+
+  const task = await Task.create({
+    title: data.title,
+    description: data.description,
+    projectId: data.projectId,
+    assignedTo: data.assignedTo,
+    organizationId: user.organizationId,
+  })
+
+  if (data.assignedTo) {
+    // fetch assigned user email
+    const assignedUser = await User.findById(data.assignedTo)
+
+    if (assignedUser) {
+      await emailQueue.add('sendEmail', {
+        email: assignedUser.email,
+        taskTitle: task.title,
+      })
+    }
+  }
+
+  return task
+}
+
+/**
+ * 🔹 Get Tasks (by project)
+ */
+exports.getTasks = async (projectId, user) => {
+  const tasks = await Task.find({
+    projectId,
+    organizationId: user.organizationId,
+  }).lean()
+
+  return tasks
+}
+
+/**
+ * 🔹 Update Task Status
+ */
+exports.updateTaskStatus = async (taskId, status, user) => {
+  const task = await Task.findOneAndUpdate(
+    {
+      _id: taskId,
+      organizationId: user.organizationId,
+    },
+    { status },
+    { new: true }
+  )
+
+  if (!task) {
+    throw new Error('Task not found')
+  }
+
+  return task
+}
