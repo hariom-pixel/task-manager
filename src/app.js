@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const swaggerUi = require('swagger-ui-express')
 const swaggerSpec = require('./config/swagger')
 
@@ -10,6 +11,8 @@ const authRoutes = require('./routes/authRoutes')
 const protect = require('./middleware/authMiddleware')
 const projectRoutes = require('./routes/projectRoutes')
 const taskRoutes = require('./routes/taskRoutes')
+
+app.use(cors())
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
