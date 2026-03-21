@@ -10,10 +10,7 @@ const options = {
     },
     servers: [
       {
-        url:
-          process.env.NODE_ENV === 'production'
-            ? 'https://task-manager-gphs.onrender.com'
-            : 'http://localhost:3001',
+        url: '/',
       },
     ],
     components: {
@@ -31,7 +28,7 @@ const options = {
       },
     ],
   },
-  apis: ['./src/routes/*.js'], // 👈 where we write docs
+  apis: ['./src/routes/*.js'],
 }
 
 const swaggerSpec = swaggerJsdoc(options)
