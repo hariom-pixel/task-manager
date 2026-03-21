@@ -10,7 +10,10 @@ const options = {
     },
     servers: [
       {
-        url: process.env.BASE_URL || 'http://localhost:3001',
+        url:
+          process.env.NODE_ENV === 'production'
+            ? 'https://task-manager-gphs.onrender.com'
+            : 'http://localhost:3001',
       },
     ],
     components: {
