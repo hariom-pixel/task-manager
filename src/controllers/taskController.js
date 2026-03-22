@@ -55,7 +55,7 @@ exports.updateTaskStatus = async (req, res, next) => {
 /**
  * 🔹 Delete Task
  */
-exports.deleteTask = async (req, res) => {
+exports.deleteTask = async (req, res, next) => {
   try {
     const result = await taskService.deleteTask(req.params.id, req.user)
     res.json(result)
