@@ -1,6 +1,7 @@
 const Task = require('../models/Task')
 const Project = require('../models/Project')
 const emailQueue = require('../queues/emailQueue')
+const User = require('../models/User')
 
 /**
  * 🔹 Create Task
