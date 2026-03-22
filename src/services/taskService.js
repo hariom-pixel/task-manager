@@ -70,3 +70,21 @@ exports.updateTaskStatus = async (taskId, status, user) => {
 
   return task
 }
+
+/**
+ * 🔹 Delete Task
+ */
+exports.deleteTask = async (taskId, user) => {
+  const task = await Task.findOneAndDelete({
+    _id: taskId,
+    organizationId: user.organizationId,
+  })
+
+  if (!task) {
+    throw new Error('Task not found')
+  }
+
+  await deleteCache(`tasks:${task.projectId}`)
+
+  return { message: 'Task deleted' }
+}

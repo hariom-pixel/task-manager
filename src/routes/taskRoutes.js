@@ -91,4 +91,26 @@ router.get('/:projectId', protect, taskController.getTasks)
  */
 router.patch('/:id/status', protect, taskController.updateTaskStatus)
 
+/**
+ * @swagger
+ * /api/tasks/{id}:
+ *   delete:
+ *     summary: Delete task
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Task deleted
+ *       404:
+ *         description: Task not found
+ */
+router.delete('/:id', protect, taskController.deleteTask)
+
 module.exports = router
