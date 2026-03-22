@@ -64,4 +64,26 @@ router.get('/:id', protect, projectController.getProjectById)
  */
 router.post('/', protect, projectController.createProject)
 
+/**
+ * @swagger
+ * /api/projects/{id}:
+ *   delete:
+ *     summary: Delete project
+ *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Project deleted
+ *       404:
+ *         description: Project not found
+ */
+router.delete('/:id', protect, projectController.deleteProject)
+
 module.exports = router

@@ -54,3 +54,22 @@ exports.getProjectById = async (projectId, user) => {
 
   return project
 }
+
+/**
+ * 🔹 Delete Project
+ */
+exports.deleteProject = async (projectId, user) => {
+  const project = await Project.findOneAndDelete({
+    _id: projectId,
+    organizationId: user.organizationId,
+  })
+
+  if (!project) {
+    throw new Error('Project not found or unauthorized')
+  }
+
+  // Clear cache for this org
+  await deleteCache(`projects:${user.organizationId}`)
+
+  return { message: 'Project deleted successfully' }
+}

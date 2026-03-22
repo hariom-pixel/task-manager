@@ -47,3 +47,19 @@ exports.getProjectById = async (req, res, next) => {
     next(err)
   }
 }
+
+/**
+ * 🔹 Delete Project
+ */
+exports.deleteProject = async (req, res, next) => {
+  try {
+    const project = await projectService.deleteProject(req.params.id, req.user)
+
+    res.json({
+      status: 'success',
+      data: project,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
