@@ -11,6 +11,7 @@ const authRoutes = require('./routes/authRoutes')
 const protect = require('./middleware/authMiddleware')
 const projectRoutes = require('./routes/projectRoutes')
 const taskRoutes = require('./routes/taskRoutes')
+const userRoutes = require('./routes/userRoutes')
 
 app.use(cors())
 
@@ -31,5 +32,6 @@ app.get('/api/protected', protect, (req, res) => {
 
 app.use('/api/projects', projectRoutes)
 app.use('/api/tasks', taskRoutes)
+app.use('/api/users/', userRoutes)
 
 module.exports = app
