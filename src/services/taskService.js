@@ -2,6 +2,7 @@ const Task = require('../models/Task')
 const Project = require('../models/Project')
 const emailQueue = require('../queues/emailQueue')
 const User = require('../models/User')
+const { deleteCache } = require('../utils/cache')
 
 /**
  * 🔹 Create Task
