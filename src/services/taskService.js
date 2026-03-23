@@ -111,17 +111,17 @@ exports.assignTask = async (taskId, assignedTo, user) => {
   await task.save()
 
   // Send email (async)
-  if (assignedTo) {
-    const assignedUser = await User.findById(assignedTo)
+  // if (assignedTo) {
+  //   const assignedUser = await User.findById(assignedTo)
 
-    if (assignedUser) {
-      await emailQueue.add('sendEmail', {
-        email: assignedUser.email,
-        subject: 'Task Assigned',
-        message: `You have been assigned task: ${task.title}`,
-      })
-    }
-  }
+  //   if (assignedUser) {
+  //     await emailQueue.add('sendEmail', {
+  //       email: assignedUser.email,
+  //       subject: 'Task Assigned',
+  //       message: `You have been assigned task: ${task.title}`,
+  //     })
+  //   }
+  // }
 
   return task
 }
