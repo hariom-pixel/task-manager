@@ -113,4 +113,49 @@ router.patch('/:id/status', protect, taskController.updateTaskStatus)
  */
 router.delete('/:id', protect, taskController.deleteTask)
 
+/**
+ * @swagger
+ * /api/tasks/{id}/assign:
+ *   patch:
+ *     summary: Assign a task to a user
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Task ID
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               assignedTo:
+ *                 type: string
+ *                 example: 64f1c2e9a123456789abcd12
+ *     responses:
+ *       200:
+ *         description: Task assigned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *       404:
+ *         description: Task not found
+ *       401:
+ *         description: Unauthorized
+ */
+router.patch('/:id/assign', protect, taskController.assignTask)
+
 module.exports = router

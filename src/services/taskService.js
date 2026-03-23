@@ -33,7 +33,8 @@ exports.createTask = async (data, user) => {
     if (assignedUser) {
       await emailQueue.add('sendEmail', {
         email: assignedUser.email,
-        taskTitle: task.title,
+        subject: 'New Task Assigned',
+        message: `You have been assigned a new task: ${data.title}`,
       })
     }
   }
@@ -89,4 +90,38 @@ exports.deleteTask = async (taskId, user) => {
   await deleteCache(`tasks:${task.projectId}`)
 
   return { message: 'Task deleted' }
+}
+
+/**
+ * 🔹 Assign Task
+ */
+exports.assignTask = async (taskId, assignedTo, user) => {
+  // Find task (secure by org)
+  const task = await Task.findOne({
+    _id: taskId,
+    organizationId: user.organizationId,
+  })
+
+  if (!task) {
+    throw new Error('Task not found')
+  }
+
+  // 🔹 Assign user
+  task.assignedTo = assignedTo
+  await task.save()
+
+  // Send email (async)
+  if (assignedTo) {
+    const assignedUser = await User.findById(assignedTo)
+
+    if (assignedUser) {
+      await emailQueue.add('sendEmail', {
+        email: assignedUser.email,
+        subject: 'Task Assigned',
+        message: `You have been assigned task: ${task.title}`,
+      })
+    }
+  }
+
+  return task
 }

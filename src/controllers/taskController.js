@@ -63,3 +63,23 @@ exports.deleteTask = async (req, res, next) => {
     next(err)
   }
 }
+
+/**
+ * 🔹 Assign Task
+ */
+exports.assignTask = async (req, res, next) => {
+  try {
+    const task = await taskService.assignTask(
+      req.params.id,
+      req.body.assignedTo,
+      req.user
+    )
+
+    res.json({
+      success: true,
+      data: task,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
