@@ -1,4 +1,4 @@
-const ActivityLog = require('../models/ActivityLog')
+const ActivityLog = require('../models/Activity')
 
 exports.createLog = async ({ action, userId, taskId, projectId, details }) => {
   await ActivityLog.create({
