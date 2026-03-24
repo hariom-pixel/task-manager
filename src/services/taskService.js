@@ -3,6 +3,7 @@ const Project = require('../models/Project')
 const emailQueue = require('../queues/emailQueue')
 const User = require('../models/User')
 const { deleteCache } = require('../utils/cache')
+const activityService = require('./activityService')
 
 /**
  * 🔹 Create Task
@@ -31,13 +32,21 @@ exports.createTask = async (data, user) => {
     const assignedUser = await User.findById(data.assignedTo)
 
     if (assignedUser) {
-      await emailQueue.add('sendEmail', {
+      emailQueue.add('sendEmail', {
         email: assignedUser.email,
         subject: 'New Task Assigned',
         message: `You have been assigned a new task: ${data.title}`,
       })
     }
   }
+
+  activityService.createLog({
+    action: 'TASK_CREATED',
+    userId: user.id,
+    taskId: task._id,
+    projectId: task.projectId,
+    details: `Task "${task.title}" created`,
+  })
 
   return task
 }
@@ -71,6 +80,14 @@ exports.updateTaskStatus = async (taskId, status, user) => {
     throw new Error('Task not found')
   }
 
+  activityService.createLog({
+    action: 'TASK_STATUS_UPDATED',
+    userId: user.id,
+    taskId: task._id,
+    projectId: task.projectId,
+    details: `Status changed to ${newStatus}`,
+  })
+
   return task
 }
 
@@ -88,6 +105,14 @@ exports.deleteTask = async (taskId, user) => {
   }
 
   await deleteCache(`tasks:${task.projectId}`)
+
+  await activityService.createLog({
+    action: 'TASK_DELETED',
+    userId: user.id,
+    taskId: task._id,
+    projectId: task.projectId,
+    details: `Task deleted`,
+  })
 
   return { message: 'Task deleted' }
 }
@@ -122,6 +147,14 @@ exports.assignTask = async (taskId, assignedTo, user) => {
   //     })
   //   }
   // }
+
+  activityService.createLog({
+    action: 'TASK_ASSIGNED',
+    userId: user.id,
+    taskId: task._id,
+    projectId: task.projectId,
+    details: `Task assigned to user ${assignedTo}`,
+  })
 
   return task
 }
