@@ -85,7 +85,7 @@ exports.updateTaskStatus = async (taskId, status, user) => {
     userId: user.id,
     taskId: task._id,
     projectId: task.projectId,
-    details: `Status changed to ${newStatus}`,
+    details: `Status changed to ${status}`,
   })
 
   return task
