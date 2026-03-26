@@ -7,6 +7,13 @@ exports.createTask = async (req, res, next) => {
   try {
     const task = await taskService.createTask(req.body, req.user)
 
+    const io = req.app.get('io')
+
+    io.to(task.projectId.toString()).emit('activity', {
+      action: 'TASK_CREATED',
+      message: `Task "${task.title}" created`,
+    })
+
     res.status(201).json({
       status: 'success',
       data: task,
@@ -43,6 +50,13 @@ exports.updateTaskStatus = async (req, res, next) => {
       req.user
     )
 
+    const io = req.app.get('io')
+
+    io.to(task.projectId.toString()).emit('activity', {
+      action: 'TASK_UPDATED',
+      message: `Task "${task.title}" moved to ${task.status}`,
+    })
+
     res.json({
       status: 'success',
       data: task,
@@ -74,6 +88,13 @@ exports.assignTask = async (req, res, next) => {
       req.body.assignedTo,
       req.user
     )
+
+    const io = req.app.get('io')
+
+    io.to(task.projectId.toString()).emit('activity', {
+      action: 'TASK_ASSIGNED',
+      message: `Task "${task.title}" assigned to ${req?.user?.name}`,
+    })
 
     res.json({
       success: true,
