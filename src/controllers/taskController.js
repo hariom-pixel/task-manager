@@ -13,7 +13,7 @@ exports.createTask = async (req, res, next) => {
       action: 'TASK_CREATED',
       _id: new Date().getTime(),
       details: `Task "${task.title}" created`,
-      name: req.user.name,
+      userId: req.user,
       createdAt: new Date(),
     })
 
@@ -59,7 +59,7 @@ exports.updateTaskStatus = async (req, res, next) => {
       action: 'TASK_UPDATED',
       details: `Task "${task.title}" moved to ${task.status}`,
       _id: new Date().getTime(),
-      name: req.user.name,
+      userId: req.user,
       createdAt: new Date(),
     })
 
@@ -100,9 +100,9 @@ exports.assignTask = async (req, res, next) => {
     io.to(task.projectId.toString()).emit('activity', {
       action: 'TASK_ASSIGNED',
       _id: new Date().getTime(),
-      name: req.user.name,
+      userId: req.user,
       createdAt: new Date(),
-      details: `Task "${task.title}" assigned to ${req?.user?.name}`,
+      details: `Task "${task.title}" assigned to ${req?.user}`,
     })
 
     res.json({

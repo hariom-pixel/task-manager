@@ -42,7 +42,7 @@ exports.createTask = async (data, user) => {
 
   activityService.createLog({
     action: 'TASK_CREATED',
-    userId: user.id,
+    userId: user,
     taskId: task._id,
     projectId: task.projectId,
     details: `Task "${task.title}" created`,
@@ -82,7 +82,7 @@ exports.updateTaskStatus = async (taskId, status, user) => {
 
   activityService.createLog({
     action: 'TASK_STATUS_UPDATED',
-    userId: user.id,
+    userId: user,
     taskId: task._id,
     projectId: task.projectId,
     details: `Status changed to ${status}`,
@@ -108,7 +108,7 @@ exports.deleteTask = async (taskId, user) => {
 
   await activityService.createLog({
     action: 'TASK_DELETED',
-    userId: user.id,
+    userId: user,
     taskId: task._id,
     projectId: task.projectId,
     details: `Task deleted`,
@@ -150,7 +150,7 @@ exports.assignTask = async (taskId, assignedTo, user) => {
 
   activityService.createLog({
     action: 'TASK_ASSIGNED',
-    userId: user.id,
+    userId: user,
     taskId: task._id,
     projectId: task.projectId,
     details: `Task assigned to user ${assignedTo}`,
