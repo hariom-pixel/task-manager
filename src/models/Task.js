@@ -34,6 +34,9 @@ const taskSchema = new mongoose.Schema(
       ref: 'Organization',
       required: true,
     },
+    position: { type: Number, default: 0 },
+    version: { type: Number, default: 0 },
+    columnId: { type: String },
   },
   { timestamps: true }
 )

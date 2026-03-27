@@ -113,3 +113,19 @@ exports.assignTask = async (req, res, next) => {
     next(err)
   }
 }
+
+exports.moveTask = async (req, res) => {
+  try {
+    const result = await taskService.moveTask(req.body, req.user)
+
+    res.json({
+      success: true,
+      data: result,
+    })
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    })
+  }
+}

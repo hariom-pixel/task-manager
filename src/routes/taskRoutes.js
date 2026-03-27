@@ -158,4 +158,6 @@ router.delete('/:id', protect, taskController.deleteTask)
  */
 router.patch('/:id/assign', protect, taskController.assignTask)
 
+router.post('/move', taskController.moveTask)
+
 module.exports = router

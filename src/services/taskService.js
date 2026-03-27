@@ -66,19 +66,25 @@ exports.getTasks = async (projectId, user) => {
 /**
  * 🔹 Update Task Status
  */
-exports.updateTaskStatus = async (taskId, status, user) => {
-  const task = await Task.findOneAndUpdate(
-    {
-      _id: taskId,
-      organizationId: user.organizationId,
-    },
-    { status },
-    { new: true }
-  )
+exports.updateTaskStatus = async (taskId, status, version, user) => {
+  const task = await Task.findOne({
+    _id: taskId,
+    organizationId: user.organizationId,
+  })
 
   if (!task) {
     throw new Error('Task not found')
   }
+
+  // CONCURRENCY CHECK
+  if (task.version !== version) {
+    throw new Error('Conflict: task already updated')
+  }
+
+  task.status = status
+  task.version += 1
+
+  await task.save()
 
   activityService.createLog({
     action: 'TASK_STATUS_UPDATED',
@@ -154,6 +160,40 @@ exports.assignTask = async (taskId, assignedTo, user) => {
     taskId: task._id,
     projectId: task.projectId,
     details: `Task assigned to user ${assignedTo}`,
+  })
+
+  return task
+}
+
+exports.moveTask = async (data, user) => {
+  const { taskId, destinationColumnId, newPosition, version } = data
+
+  const task = await Task.findOne({
+    _id: taskId,
+    organizationId: user.organizationId,
+  })
+
+  if (!task) {
+    throw new Error('Task not found')
+  }
+
+  // CONCURRENCY CHECK
+  if (task.version !== version) {
+    throw new Error('Conflict: task updated by another user')
+  }
+
+  // UPDATE
+  task.columnId = destinationColumnId
+  task.position = newPosition
+  task.version += 1
+
+  await task.save()
+
+  // ACTIVITY LOG (keep your existing service if you have one)
+  await activityService.createLog({
+    userId: user._id,
+    action: 'TASK_MOVED',
+    taskId: task._id,
   })
 
   return task
